@@ -1,0 +1,3 @@
+backend/.env
+*.sqlite3
+backend/img_project/media/

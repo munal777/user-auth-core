@@ -1,0 +1,48 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from .serializer import LoginSerializer, RegisterSerializer, UserSerializer
+from django.contrib.auth import login, get_user_model
+from django.shortcuts import get_object_or_404
+
+User = get_user_model()
+class UserAPIView(APIView):
+    
+    def get(self, request, id):
+        
+        queryset = get_object_or_404(User, id=id)
+        serializer = UserSerializer(queryset)
+
+        return Response(serializer.data,status = status.HTTP_200_OK)
+    
+
+class LoginAPIView(APIView):
+
+    def post(self, request):
+        serializer = LoginSerializer(data = request.data)
+
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+
+            #creating the sessions
+            login(request, user)
+
+            return Response({
+                "message": "Login successful",
+                "username": user.username,
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class RegisterAPIView(APIView):
+
+    def post(self, request):
+        serializer = RegisterSerializer(data = request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response({   
+                "message": "Register successful",
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+   
