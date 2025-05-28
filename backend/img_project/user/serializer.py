@@ -56,7 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields= ['id', 'username', 'password']
         read_only_fields = ['id']
         extra_kwargs = {
-            'password': {'write_only':True}
+            'password': {'write_only':True, 'required': False}
         }
         
     def validate(self, attrs):
@@ -64,10 +64,10 @@ class UserSerializer(serializers.ModelSerializer):
         email = attrs.get('email')
         user = self.instance
 
-        if User.objects.filter(username= username).exclude(user=user).exists():
+        if User.objects.filter(username= username).exclude(id=user.id).exists():
             raise serializers.ValidationError("Username Already exists")
         
-        if User.objects.filter(email= email).exists():
+        if User.objects.filter(email= email).exclude(email=user.email).exists():
             raise serializers.ValidationError("Email already exists")
         
         return attrs
@@ -76,5 +76,5 @@ class UserSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
-
+        instance.save()
         return instance

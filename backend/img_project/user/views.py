@@ -13,7 +13,17 @@ class UserAPIView(APIView):
         queryset = get_object_or_404(User, id=id)
         serializer = UserSerializer(queryset)
 
-        return Response(serializer.data,status = status.HTTP_200_OK)
+        return Response(serializer.data,)
+    
+    def put(self, request, id):
+        user = User.objects.get(id=id)
+        serializer = UserSerializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class LoginAPIView(APIView):
