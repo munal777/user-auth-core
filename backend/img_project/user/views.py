@@ -31,14 +31,14 @@ class UserProfileAPIView(APIView):
     def get(self, request, id):
 
         queryset = get_object_or_404(UserProfile, id=id)
-        serializer = UserProfileSerializer(queryset, data=request.data)
+        serializer = UserProfileSerializer(queryset)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
         
     def put(self, request, id):
 
         queryset = get_object_or_404(UserProfile, id=id)
-        serializer = UserProfileSerializer(queryset)
+        serializer = UserProfileSerializer(queryset, data=request.data)
 
         if serializer.is_valid():
             serializer.save()
