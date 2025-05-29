@@ -1,3 +1,3 @@
-backend/.env
+backend/img_project/.env
 *.sqlite3
 backend/img_project/media/
