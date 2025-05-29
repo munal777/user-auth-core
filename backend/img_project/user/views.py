@@ -1,9 +1,10 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializer import LoginSerializer, RegisterSerializer, UserSerializer
+from .serializer import LoginSerializer, RegisterSerializer, UserSerializer, UserProfileSerializer
 from django.contrib.auth import login, get_user_model
 from django.shortcuts import get_object_or_404
+from .models import UserProfile
 
 User = get_user_model()
 class UserAPIView(APIView):
@@ -22,6 +23,26 @@ class UserAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
 
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileAPIView(APIView):
+
+    def get(self, request, id):
+
+        queryset = get_object_or_404(UserProfile, id=id)
+        serializer = UserProfileSerializer(queryset, data=request.data)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    def put(self, request, id):
+
+        queryset = get_object_or_404(UserProfile, id=id)
+        serializer = UserProfileSerializer(queryset)
+
+        if serializer.is_valid():
+            serializer.save()
+        
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

@@ -12,7 +12,7 @@ class LoginSerializer(serializers.Serializer):
 
 
     def validate(self, attrs):
-        
+
         username = attrs.get('username')
         password = attrs.get('password')
 
@@ -58,7 +58,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model= User
-        fields= ['id', 'username', 'password']
+        fields= ['id', 'username', 'email', 'password']
         read_only_fields = ['id']
         extra_kwargs = {
             'password': {'write_only':True, 'required': False}
@@ -73,7 +73,7 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(username= username).exclude(id=user.id).exists():
             raise serializers.ValidationError("Username Already exists")
         
-        if User.objects.filter(email= email).exclude(email=user.email).exists():
+        if User.objects.filter(email= email).exclude(id=user.id).exists():
             raise serializers.ValidationError("Email already exists")
         
         return attrs
