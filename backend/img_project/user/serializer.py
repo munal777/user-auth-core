@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
+from .models import UserProfile
+import os
 
 User = get_user_model()
 
@@ -10,6 +12,7 @@ class LoginSerializer(serializers.Serializer):
 
 
     def validate(self, attrs):
+        
         username = attrs.get('username')
         password = attrs.get('password')
 
@@ -29,6 +32,7 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
+
         username = attrs['username']
         email = attrs['email']
         password = attrs['password']
@@ -45,6 +49,7 @@ class RegisterSerializer(serializers.Serializer):
         return attrs
     
     def create(self, validated_data):
+
         return User.objects.create_user(**validated_data)
     
 
@@ -60,6 +65,7 @@ class UserSerializer(serializers.ModelSerializer):
         }
         
     def validate(self, attrs):
+
         username = attrs.get('username')
         email = attrs.get('email')
         user = self.instance
@@ -74,7 +80,41 @@ class UserSerializer(serializers.ModelSerializer):
         
     
     def update(self, instance, validated_data):
+
         instance.username = validated_data.get('username', instance.username)
         instance.email = validated_data.get('email', instance.email)
+        instance.save()
+        return instance
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = UserProfile
+        fields = ['id', 'user','profileImage']
+        read_only_fields = ['id']
+    
+    def validate_profileImage(self, value):
+
+        max_size = 5 * 1024 * 1024
+        if value.size > max_size:
+             raise serializers.ValidationError("Image size should not exceed 5 MB.")
+        
+        valid_mime_types = ['image/jpeg', 'image/png']
+        if value.content_type not in valid_mime_types:
+            raise serializers.ValidationError("Unsupported image type. Allowed types: jpg, png.")
+        
+        valid_extensions = ['.jpg', '.jpeg', '.png']
+        ext = os.path.splitext(value.name)[1].lower()
+        if ext not in valid_extensions:
+            raise serializers.ValidationError("Unsupported file extension.")
+
+        return value
+            
+        
+    def update(self, instance, validated_data):
+
+        instance.profileImage = validated_data.get('profileImage', instance.profileImage)
         instance.save()
         return instance
