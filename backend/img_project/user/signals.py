@@ -3,13 +3,14 @@ from django.dispatch import receiver
 from .models import UserProfile
 from django.contrib.auth import get_user_model
 from .utils import welcome_mail
+from .tasks import send_welcome_message
 
 User = get_user_model()
 
 @receiver(post_save, sender=User)
 def send_welcome_mail(sender, instance, created, **kwargs):
     if created:
-        welcome_mail(instance.email)
+        send_welcome_message.delay(instance.email)
 
 
 @receiver(post_save, sender=User)
