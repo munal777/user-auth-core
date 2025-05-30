@@ -1,3 +1,5 @@
 backend/img_project/.env
+backend/user-venv/
 *.sqlite3
+**/__pycache__/
 backend/img_project/media/
