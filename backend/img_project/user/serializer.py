@@ -120,13 +120,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
-class PasswordChangeSerializer(serializers.Serializer):
+class SendOTPSerializer(serializers.Serializer):
     email = serializers.CharField()
-    otp_code = serializers.IntegerField()
 
     def validate(self, attrs):
         email = attrs.get('email', '')
         if not User.objects.filter(email= email).exists():
             raise serializers.ValidationError("No account exist with this email.")
-        
-        
+
+        return attrs        

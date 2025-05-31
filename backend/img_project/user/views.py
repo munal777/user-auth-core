@@ -1,10 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializer import LoginSerializer, RegisterSerializer, UserSerializer, UserProfileSerializer
+from .serializer import LoginSerializer, RegisterSerializer, UserSerializer, UserProfileSerializer, SendOTPSerializer
 from django.contrib.auth import login, get_user_model
 from django.shortcuts import get_object_or_404
 from .models import UserProfile
+from utils import send_otp_to_email
 
 User = get_user_model()
 class UserAPIView(APIView):
@@ -77,3 +78,16 @@ class RegisterAPIView(APIView):
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
    
+
+class SendOTPView(APIView):
+    
+    def post(self, request):
+        serializer = SendOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+
+            send_otp_to_email(email)
+
+            return Response({"message": "OTP send to email"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
