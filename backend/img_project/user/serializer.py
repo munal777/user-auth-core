@@ -118,3 +118,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.profileImage = validated_data.get('profileImage', instance.profileImage)
         instance.save()
         return instance
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    otp_code = serializers.IntegerField()
+
+    def validate(self, attrs):
+        email = attrs.get('email', '')
+        if not User.objects.filter(email= email).exists():
+            raise serializers.ValidationError("No account exist with this email.")
+        
+        

@@ -10,3 +10,4 @@ def welcome_mail(user_mail):
     app_mail = settings.EMAIL_HOST_USER
 
     send_mail(subject, message, app_mail, [user_mail], fail_silently=True)
+
