@@ -119,3 +119,9 @@ class SendOTPView(APIView):
 
             return Response({"message": "OTP send to email"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ValidateOTPView(APIView):
+
+    def post(self, request):
+        serializer = ValidateOTPSerializer(data=request.data)
