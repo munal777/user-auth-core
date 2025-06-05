@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from .models import UserProfile
 from utils import send_otp_to_email
 from rest_framework.permissions import AllowAny, IsAdminUser
+from .permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
 
@@ -23,6 +24,8 @@ class UserListAPIView(APIView):
 
 class UserDetailsAPIView(APIView):
     
+    permission_classes = [IsOwnerOrReadOnly]
+
     def get(self, request, id):
         
         queryset = get_object_or_404(User, id=id)
@@ -41,6 +44,8 @@ class UserDetailsAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileAPIView(APIView):
+
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get(self, request, id):
 
@@ -62,6 +67,8 @@ class UserProfileAPIView(APIView):
     
 
 class LoginAPIView(APIView):
+
+    permission_classes = [AllowAny]    
 
     def post(self, request):
         serializer = LoginSerializer(data = request.data)
@@ -95,6 +102,8 @@ class RegisterAPIView(APIView):
    
 
 class SendOTPView(APIView):
+
+    permission_classes = [AllowAny]
     
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
