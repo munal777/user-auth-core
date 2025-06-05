@@ -8,6 +8,7 @@ from .models import UserProfile
 from utils import send_otp_to_email
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .permissions import IsOwnerOrReadOnly
+from .tasks import send_otp
 from .utils import generate_otp
 from django.core.cache import cache
 
@@ -114,7 +115,7 @@ class SendOTPView(APIView):
             email = serializer.validated_data['email']
             otp_code = generate_otp()
             cache.set(f"otp:{email}", otp_code, timeout=300)
-            send_otp_to_email(email, otp_code)
+            send_otp.delay(email, otp_code)
 
             return Response({"message": "OTP send to email"}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
