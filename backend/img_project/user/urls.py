@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserAPIView, LoginAPIView, RegisterAPIView, UserProfileAPIView
+from .views import UserAPIView, LoginAPIView, RegisterAPIView, UserProfileAPIView, SendOTPView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('register/', RegisterAPIView.as_view(), name='register'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('send-otp/', SendOTPView.as_view(), name='send_otp')
 ]
