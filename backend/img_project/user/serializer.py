@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import get_user_model, authenticate
 from .models import UserProfile
 import os
+from django.core.cache import cache
 
 User = get_user_model()
 
@@ -121,7 +122,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class SendOTPSerializer(serializers.Serializer):
-    email = serializers.CharField()
+    email = serializers.EmailField()
 
     def validate(self, attrs):
         email = attrs.get('email', '')
@@ -129,3 +130,23 @@ class SendOTPSerializer(serializers.Serializer):
             raise serializers.ValidationError("No account exist with this email.")
 
         return attrs        
+
+
+
+class ValidateOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        otp = attrs.get("otp")
+
+        stored_otp = cache.get(f"otp:{email}")
+
+        if stored_otp is None:
+            raise serializers.ValidationError("OTP has expired or was not found.")
+        
+        if stored_otp != otp:
+            raise serializers.ValidationError("Invalid OTP.")
+        
+        return attrs
