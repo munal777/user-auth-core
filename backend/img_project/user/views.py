@@ -6,9 +6,22 @@ from django.contrib.auth import login, get_user_model
 from django.shortcuts import get_object_or_404
 from .models import UserProfile
 from utils import send_otp_to_email
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 User = get_user_model()
-class UserAPIView(APIView):
+
+
+class UserListAPIView(APIView):
+
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        queryset = User.objects.all()
+
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class UserDetailsAPIView(APIView):
     
     def get(self, request, id):
         
@@ -67,6 +80,8 @@ class LoginAPIView(APIView):
     
 
 class RegisterAPIView(APIView):
+    
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RegisterSerializer(data = request.data)

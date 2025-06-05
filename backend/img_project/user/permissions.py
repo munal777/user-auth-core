@@ -1,10 +1,3 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import BasePermission
 
-class ExampleView:
-    permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        content = {
-            'status': 'request was permitted'
-        }
-        return Response(content)
