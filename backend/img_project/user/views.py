@@ -125,3 +125,8 @@ class ValidateOTPView(APIView):
 
     def post(self, request):
         serializer = ValidateOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            pass
+
+

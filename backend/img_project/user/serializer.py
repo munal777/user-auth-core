@@ -141,12 +141,17 @@ class ValidateOTPSerializer(serializers.Serializer):
         email = attrs.get("email")
         otp = attrs.get("otp")
 
-        stored_otp = cache.get(f"otp:{email}")
+        key= f"otp:{email}"
+        stored_otp = cache.get(key)
 
         if stored_otp is None:
             raise serializers.ValidationError("OTP has expired or was not found.")
         
         if stored_otp != otp:
             raise serializers.ValidationError("Invalid OTP.")
+        
+        # OTP is valid, now mark as verified
+        cache.delete(key)
+        cache.set(f"otp_verified:{email}", True, timeout=300)
         
         return attrs
