@@ -173,7 +173,15 @@ class ChangePaswordSerializer(serializers.Serializer):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise serializers.ValidationError("User not found")
-        
+
+        if user.check_password(password):
+            raise serializers.ValidationError("New password can’t be the same as the old one.")
+
         attrs["user"] = user
 
         return attrs
+    
+
+    def save(self):
+        user = self.validated_data["user"]
+        new_password = self.validated_data["password"]
