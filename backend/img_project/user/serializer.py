@@ -155,3 +155,20 @@ class ValidateOTPSerializer(serializers.Serializer):
         cache.set(f"otp_verified:{email}", True, timeout=300)
         
         return attrs
+
+
+class ChangePaswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get("email")
+        password = attrs.get("password")
+
+        if not User.objects.filter(email = email).exists():
+            raise serializers.ValidationError("User does not exist.")
+        
+        stored_verified_otp = cache.get(f"otp_verified:{email}")
+
+        if stored_verified_otp:
+            pass
