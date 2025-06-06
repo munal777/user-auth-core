@@ -164,11 +164,16 @@ class ChangePaswordSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get("email")
         password = attrs.get("password")
+        verified_key = f"otp_verified:{email}"
 
-        if not User.objects.filter(email = email).exists():
-            raise serializers.ValidationError("User does not exist.")
+        if not cache.get(verified_key):
+            raise serializers.ValidationError("OTP not verified or expired.")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found")
         
-        stored_verified_otp = cache.get(f"otp_verified:{email}")
+        attrs["user"] = user
 
-        if stored_verified_otp:
-            pass
+        return attrs
