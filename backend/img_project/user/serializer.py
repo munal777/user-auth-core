@@ -186,5 +186,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.validated_data["user"]
         new_password = self.validated_data["password"]
 
+        verified_key = f"otp_verified:{user.email}"
+
         user.set_password(new_password)
         user.save()
+
+        cache.delete(verified_key)

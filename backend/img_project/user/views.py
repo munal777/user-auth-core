@@ -134,6 +134,8 @@ class ValidateOTPView(APIView):
 
 class ChangePasswordAPIView(APIView):
 
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data)
 
