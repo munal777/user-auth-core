@@ -157,7 +157,7 @@ class ValidateOTPSerializer(serializers.Serializer):
         return attrs
 
 
-class ChangePaswordSerializer(serializers.Serializer):
+class ChangePasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
 
