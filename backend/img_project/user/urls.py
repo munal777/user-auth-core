@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserAPIView, LoginAPIView, RegisterAPIView, UserListAPIView, UserDetailsAPIView, UserProfileAPIView, SendOTPView, ValidateOTPView, ChangePasswordAPIView
+from .views import LoginAPIView, RegisterAPIView, UserListAPIView, UserDetailsAPIView, UserProfileAPIView, SendOTPView, ValidateOTPView, ChangePasswordAPIView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [

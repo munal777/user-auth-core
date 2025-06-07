@@ -5,7 +5,6 @@ from .serializer import LoginSerializer, RegisterSerializer, UserSerializer, Use
 from django.contrib.auth import login, get_user_model
 from django.shortcuts import get_object_or_404
 from .models import UserProfile
-from utils import send_otp_to_email
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .permissions import IsOwnerOrReadOnly
 from .tasks import send_otp
