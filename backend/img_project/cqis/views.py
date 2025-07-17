@@ -11,7 +11,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework import status
 
 from .serializers import PDFSerializer
-from .utils import split_pdf
+from .utils import split_pdf, event_stream
 
 def event_stream(pages):
     for i, pages in enumerate(pages):
@@ -47,4 +47,5 @@ class UploadPDFView(APIView):
 class StreamPagesView(View):
 
     def get(self, request, task_id):
-        
+
+        return StreamingHttpResponse(event_stream(task_id), content_type='text/event-stream')
