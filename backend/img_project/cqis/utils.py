@@ -1,4 +1,6 @@
 import os
+import time
+
 from PyPDF2 import PdfReader, PdfWriter
 from django.conf import settings
 
@@ -24,3 +26,19 @@ def split_pdf(pdf, task_id):
         page_files.append(page_path)
        
     return page_files
+
+
+
+def event_stream(task_id):
+
+    output_dir = os.path.join(settings.MEDIA_ROOT, task_id)
+    total_pages = len(os.listdir(output_dir))
+
+    for i in range(total_pages):
+        page_path = os.path.join(output_dir, f'page_{i}.pdf')
+
+        if os.path.exists(page_path):
+            yield f"data: {page_path}"
+            time.sleep(3)
+        else:
+            break

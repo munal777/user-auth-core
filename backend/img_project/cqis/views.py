@@ -43,3 +43,8 @@ class UploadPDFView(APIView):
             return Response({'task_id': task_id}, status=status.HTTP_200_OK)
         
 
+
+class StreamPagesView(View):
+
+    def get(self, request, task_id):
+        
