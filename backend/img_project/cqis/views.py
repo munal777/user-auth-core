@@ -1,8 +1,17 @@
 import time
+import json
+import uuid
+
 from django.http import StreamingHttpResponse
 from django.views import View
-import json
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from rest_framework import status
+
+from .serializers import PDFSerializer
+from .utils import split_pdf
 
 def event_stream(pages):
     for i, pages in enumerate(pages):
@@ -16,7 +25,21 @@ def event_stream(pages):
 
         yield f"data: {json.dumps(result)}\n\n"
 
-class StreamView(View):
+class UploadPDFView(APIView):
+
+    permission_classes = [AllowAny]
 
     def post(self, request):
-        pdf = request.FILES.get('files')
+        file = request.FILES.get('file')
+
+        serializers = PDFSerializer(data={'file': file})
+
+        if serializers.is_valid(raise_exception=True):
+            pdf_file = serializers.validated_data['file']
+
+            task_id = str(uuid.uuid4())
+            pdf_list = split_pdf(pdf_file, task_id)
+
+            return Response({'task_id': task_id}, status=status.HTTP_200_OK)
+        
+

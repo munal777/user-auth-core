@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import sse_view
+from .views import UploadPDFView
 
 urlpatterns = [
-    path('events/', sse_view, name='sse_events'),
+    path('events/', UploadPDFView.as_view(), name='sse_events'),
 ]
