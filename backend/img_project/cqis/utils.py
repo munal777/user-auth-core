@@ -33,10 +33,8 @@ def event_stream(task_id):
 
     output_dir = os.path.join(settings.MEDIA_ROOT, task_id)
     total_pages = len(os.listdir(output_dir))
-    print(total_pages)
 
     for i in range(total_pages):
-        print(i)
         page_path = os.path.join(output_dir, f'page_{i+1}.pdf')
 
         if os.path.exists(page_path):
