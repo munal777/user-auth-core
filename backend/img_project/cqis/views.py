@@ -13,18 +13,6 @@ from rest_framework import status
 from .serializers import PDFSerializer
 from .utils import split_pdf, event_stream
 
-def event_stream(pages):
-    for i, pages in enumerate(pages):
-        time.sleep(5)
-
-        result = {
-            "page": i + 1,
-            "summary": f"Summary of Page {i + 1}",
-            "status": "done"
-        }
-
-        yield f"data: {json.dumps(result)}\n\n"
-
 class UploadPDFView(APIView):
 
     permission_classes = [AllowAny]
