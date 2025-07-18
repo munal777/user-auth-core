@@ -33,7 +33,6 @@ class UploadPDFView(APIView):
 
 
 class StreamPagesView(View):
-
+    
     def get(self, request, task_id):
-
         return StreamingHttpResponse(event_stream(task_id), content_type='text/event-stream')

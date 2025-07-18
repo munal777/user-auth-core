@@ -28,7 +28,6 @@ def split_pdf(pdf, task_id):
     return page_files
 
 
-
 def event_stream(task_id):
 
     output_dir = os.path.join(settings.MEDIA_ROOT, task_id)
