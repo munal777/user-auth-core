@@ -53,5 +53,3 @@ def event_stream(task_id):
             if result.ready():
                 yield f"data: {result.result}\n\n"
                 completed.add(page_num)
-
-        time.sleep(0.5)   
