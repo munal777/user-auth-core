@@ -146,3 +146,8 @@ CACHES = {
         }
     }
 }
+
+# swagger settings
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': True,
+}
