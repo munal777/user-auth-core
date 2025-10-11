@@ -7,8 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from django.core.cache import cache
 
-from .models import User
-from .models import UserProfile
+from .models import User, UserProfile
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
