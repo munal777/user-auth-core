@@ -1,58 +1,98 @@
-from rest_framework import serializers
-from django.contrib.auth import get_user_model, authenticate
-from .models import UserProfile
 import os
+import re
+
+from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.exceptions import AuthenticationFailed
+
 from django.core.cache import cache
 
-User = get_user_model()
-
-class LoginSerializer(serializers.Serializer):
-
-    username = serializers.CharField(max_length=25)
-    password = serializers.CharField(write_only=True)
+from .models import User
+from .models import UserProfile
 
 
-    def validate(self, attrs):
+class RegisterUserSerializer(serializers.ModelSerializer):
+    confirm_password = serializers.CharField(write_only=True)
 
-        username = attrs.get('username')
-        password = attrs.get('password')
+    class Meta:
+        model = User
+        fields = [
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'password',
+            'confirm_password',
+        ]
+        extra_kwargs = {
+            'password': {'write_only': True},
+        }
 
-        user = authenticate(username=username, password=password)
+    def validate_email(self, value):
+        """Check if the email is already taken."""
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email is already registered.")
+        return value
 
-        if user is None:
-            raise serializers.ValidationError("Invalid username or password")
-        
-        attrs['user'] = user
-
-        return attrs
-
-class RegisterSerializer(serializers.Serializer):
-
-    username = serializers.CharField(max_length=15 ,required=True)
-    email = serializers.EmailField(required=True)
-    password = serializers.CharField(write_only=True)
-
-    def validate(self, attrs):
-
-        username = attrs['username']
-        email = attrs['email']
-        password = attrs['password']
-
-        if User.objects.filter(username=username).exists():
-            raise serializers.ValidationError("Username already exists.")
-        
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError("Email already exists.")
-
-        if not password or len(password) < 8:
-            raise serializers.ValidationError("Create a Strong password")
-        
-        return attrs
+    def validate_phone_number(self, value):
+        """Validate phone number format."""
+        if not value.isdigit():
+            raise serializers.ValidationError("Phone number must contain only digits.")
+        if len(value) < 7 or len(value) > 15:
+            raise serializers.ValidationError("Phone number length must be between 7 and 15 digits.")
+        return value
     
+    def validate_password(self, value):
+        """Validate password strength"""
+        # 1. Minimum length
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters long.")
+        
+        # 2. Must contain at least one letter (any case)
+        if not re.search(r'[A-Za-z]', value):
+            raise serializers.ValidationError("Password must contain at least one letter.")
+        
+        # 3. Must contain at least one number or one special character
+        if not re.search(r'[\d@$!%*#?&]', value):
+            raise serializers.ValidationError(
+                "Password must contain at least one number or one special character"
+            )
+        
+        return value    
+
+    def validate(self, attrs):
+        """Check if passwords match."""
+        if attrs.get('password') != attrs.get('confirm_password'):
+            raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+        return attrs
+
     def create(self, validated_data):
-
-        return User.objects.create_user(**validated_data)
+        """Use the custom manager to create the user."""
+        validated_data.pop('confirm_password')
+        password = validated_data.pop('password')
+        user = User.objects.create_user(password=password, **validated_data)
+        return user
     
+
+class LoginUserSerializer(TokenObtainPairSerializer):
+    username_field = 'email'
+
+    def validate(self, attrs):
+        try:
+            data = super().validate(attrs)    
+        except AuthenticationFailed:
+            raise serializers.ValidationError(
+                {"detail": "Invalid email or password"}
+            )
+
+        data.update({
+            "user": {
+                "role": self.user.role,
+            }
+        })
+
+        return data
+
 
 
 class UserSerializer(serializers.ModelSerializer):
