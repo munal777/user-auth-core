@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializer import LoginSerializer, RegisterSerializer, UserSerializer, UserProfileSerializer, SendOTPSerializer, ValidateOTPSerializer, ChangePasswordSerializer
+from .serializers import LoginSerializer, RegisterSerializer, UserSerializer, UserProfileSerializer, SendOTPSerializer, ValidateOTPSerializer, ChangePasswordSerializer
 from django.contrib.auth import login, get_user_model
 from django.shortcuts import get_object_or_404
 from .models import UserProfile
