@@ -162,6 +162,15 @@ CACHES = {
 }
 
 # swagger settings
+# Swagger settings
 SWAGGER_SETTINGS = {
-    'USE_SESSION_AUTH': True,
+    'USE_SESSION_AUTH': False,  # Disable Django session login
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'JWT Authorization header using the Bearer scheme. Example: "Bearer {your_token}"',
+        }
+    },
 }
