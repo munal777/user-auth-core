@@ -11,8 +11,16 @@ from django.core.cache import cache
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-
-from .serializers import LoginUserSerializer, RegisterUserSerializer, UserSerializer, UserProfileSerializer, SendOTPSerializer, ValidateOTPSerializer, ChangePasswordSerializer
+from myproject.utils import api_response
+from .serializers import (
+    LoginUserSerializer,
+    RegisterUserSerializer,
+    UserSerializer, 
+    UserProfileSerializer, 
+    SendOTPSerializer, 
+    ValidateOTPSerializer, 
+    ChangePasswordSerializer
+)
 from .models import UserProfile, User
 from .permissions import IsOwnerOrReadOnly
 from .tasks import send_otp
