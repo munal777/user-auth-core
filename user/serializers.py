@@ -17,9 +17,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'email',
-            'first_name',
-            'last_name',
-            'phone_number',
+            'username',
             'password',
             'confirm_password',
         ]
@@ -27,19 +25,18 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             'password': {'write_only': True},
         }
 
+    def validate_username(self, value):
+        """Check if the username is already taken."""
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username is already registered.")
+        return value
+
     def validate_email(self, value):
         """Check if the email is already taken."""
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Email is already registered.")
         return value
 
-    def validate_phone_number(self, value):
-        """Validate phone number format."""
-        if not value.isdigit():
-            raise serializers.ValidationError("Phone number must contain only digits.")
-        if len(value) < 7 or len(value) > 15:
-            raise serializers.ValidationError("Phone number length must be between 7 and 15 digits.")
-        return value
     
     def validate_password(self, value):
         """Validate password strength"""
@@ -132,16 +129,16 @@ class UserProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     class Meta:
         model = UserProfile
-        fields = ['id', 'user','profileImage']
+        fields = ['id', 'user','profile_image']
         read_only_fields = ['id']
     
-    def validate_profileImage(self, value):
+    def validate_profile_image(self, value):
 
         max_size = 5 * 1024 * 1024
         if value.size > max_size:
              raise serializers.ValidationError("Image size should not exceed 5 MB.")
         
-        valid_mime_types = ['image/jpeg', 'image/png']
+        valid_mime_types = ['image/jpeg', 'image/jpg', 'image/png']
         if value.content_type not in valid_mime_types:
             raise serializers.ValidationError("Unsupported image type. Allowed types: jpg, png.")
         
@@ -155,7 +152,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         
     def update(self, instance, validated_data):
 
-        instance.profileImage = validated_data.get('profileImage', instance.profileImage)
+        instance.profileImage = validated_data.get('profile_image', instance.profileImage)
         instance.save()
         return instance
 

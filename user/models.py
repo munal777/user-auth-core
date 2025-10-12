@@ -13,9 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         USER = "user", _("User")
 
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    username = models.CharField(max_length=30, unique=True)
 
     role = models.CharField(
         max_length=20,
@@ -58,7 +56,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.username}"
+
 
 
 def image_upload_path(instance, filename):
@@ -66,7 +65,7 @@ def image_upload_path(instance, filename):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete= models.CASCADE)
-    profileImage = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
+    profile_image = models.ImageField(upload_to=image_upload_path, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
