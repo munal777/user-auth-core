@@ -28,9 +28,8 @@ from .utils import generate_otp
 
 
 
-class RegistrationView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterUserSerializer
+class RegistrationView(APIView):
+    
     permission_classes = [AllowAny]
 
     @swagger_auto_schema(
@@ -42,8 +41,9 @@ class RegistrationView(generics.CreateAPIView):
         },
         tags=["Auth"]
     )
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterUserSerializer(data=request.data)
+
         if serializer.is_valid():
             serializer.save()
 
