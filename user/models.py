@@ -13,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         USER = "user", _("User")
 
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=True, blank=True, null=True)
 
     role = models.CharField(
         max_length=20,
@@ -56,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.username}"
+        return f"{self.username} is {self.role}"
 
 
 

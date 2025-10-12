@@ -71,7 +71,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     
 
 class LoginUserSerializer(TokenObtainPairSerializer):
-    username_field = 'email'
 
     def validate(self, attrs):
         try:

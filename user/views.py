@@ -1,9 +1,11 @@
-from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import AllowAny, IsAdminUser
+
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from django.shortcuts import get_object_or_404
 from django.core.cache import cache
@@ -76,13 +78,34 @@ class LoginView(TokenObtainPairView):
         tags=["Auth"]
     )
     def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-
+        serializer = self.get_serializer(data=request.data)
+        
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0]) from e
+        except ValidationError as e:
+            # Catch validation errors 
+            error_message = e.detail
+            print(error_message)
+            if isinstance(error_message, list):
+                error_message = error_message[0] if error_message else "Invalid credentials"
+            elif isinstance(error_message, dict):
+                error_message = error_message.get('detail', 'Invalid credentials')
+            
+            return api_response(
+                is_success=False,
+                error_message=error_message,
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+        
         return api_response(
-            result=response.data,
+            result=serializer.validated_data,
             is_success=True,
             status_code=status.HTTP_200_OK
         )
+
+
 
 
 class UserListAPIView(APIView):
