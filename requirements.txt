@@ -1,6 +1,7 @@
 amqp==5.3.1
 asgiref==3.8.1
 billiard==4.2.1
+cachetools==6.2.1
 celery==5.5.2
 certifi==2025.10.5
 cffi==2.0.0
@@ -12,11 +13,11 @@ click-repl==0.3.0
 colorama==0.4.6
 cryptography==46.0.2
 Django==5.2.1
-django-allauth==65.12.0
 django-redis==5.4.0
 djangorestframework==3.16.0
 djangorestframework_simplejwt==5.5.1
 drf-yasg==1.21.10
+google-auth==2.41.1
 idna==3.11
 inflection==0.5.1
 kombu==5.5.3
@@ -24,6 +25,8 @@ oauthlib==3.3.1
 packaging==25.0
 pillow==11.2.1
 prompt_toolkit==3.0.51
+pyasn1==0.6.1
+pyasn1_modules==0.4.2
 pycparser==2.23
 PyJWT==2.10.1
 python-dateutil==2.9.0.post0
@@ -32,6 +35,7 @@ pytz==2025.2
 PyYAML==6.0.2
 redis==6.2.0
 requests==2.32.5
+rsa==4.9.1
 six==1.17.0
 sqlparse==0.5.3
 tzdata==2025.2

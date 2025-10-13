@@ -33,10 +33,6 @@ INSTALLED_APPS = [
     # third-party apps
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
     'drf_yasg',
 ]
 
@@ -48,9 +44,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # Add the account middleware:
-    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -185,6 +178,6 @@ SWAGGER_SETTINGS = {
 
 
 # oauth with google setups
-GOOGLE_CLIENT_ID = config('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
+GOOGLE_OAUTH_CLIENT_ID = config('GOOGLE_CLIENT_ID')
+GOOGLE_OAUTH_CLIENT_SECRET = config('GOOGLE_CLIENT_SECRET')
 
