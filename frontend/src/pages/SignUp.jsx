@@ -48,63 +48,17 @@ const SignUp = () => {
     console.log('Sign up with Google');
   };
 
-  return (
-    <div style={{ 
-      display: 'flex', 
-      height: '100vh', 
-      overflow: 'hidden',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
-    }}>
+    return (
+    <div className="flex h-screen overflow-hidden font-system">
       {/* Left Side - Decorative */}
-      <div style={{
-        flex: 1,
-        background: 'linear-gradient(135deg, #0047AB 0%, #1C75BC 100%)',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '60px',
-        overflow: 'hidden'
-      }}>
+      <div className="flex-1 bg-gradient-to-br from-[#0047AB] to-[#1C75BC] relative flex flex-col justify-center items-center p-[60px] overflow-hidden">
         {/* Decorative Elements */}
-        <div style={{
-          position: 'absolute',
-          top: '10%',
-          left: '10%',
-          width: '100px',
-          height: '100px',
-          borderRadius: '50%',
-          border: '2px solid rgba(255, 255, 255, 0.2)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          top: '20%',
-          right: '15%',
-          width: '6px',
-          height: '60px',
-          background: 'rgba(255, 255, 255, 0.3)',
-          borderRadius: '3px'
-        }} />
-        <div style={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '15%',
-          width: '80px',
-          height: '80px',
-          border: '2px solid rgba(255, 255, 255, 0.15)',
-          transform: 'rotate(45deg)'
-        }} />
+        <div className="absolute top-[10%] left-[10%] w-[100px] h-[100px] rounded-full border-[2px] border-[rgba(255,255,255,0.2)] border-opacity-20" />
+        <div className="absolute top-[20%] right-[15%] w-[6px] h-[60px] bg-[rgba(255,255,255,0.3)] bg-opacity-30 rounded-[3px]" />
+        <div className="absolute bottom-[15%] left-[15%] w-[80px] h-[80px] border-[2px] border-[rgba(255,255,255,0.15)] border-opacity-15 rotate-45" />
         
         {/* Wavy decorative lines */}
-        <svg style={{
-          position: 'absolute',
-          bottom: '20%',
-          right: '10%',
-          width: '200px',
-          height: '200px',
-          opacity: 0.3
-        }} viewBox="0 0 200 200">
+        <svg className="absolute bottom-[20%] right-[10%] w-[200px] h-[200px] opacity-30" viewBox="0 0 200 200">
           <path d="M 20 100 Q 60 80, 100 100 T 180 100" 
                 stroke="rgba(255, 255, 255, 0.4)" 
                 strokeWidth="2" 
@@ -120,60 +74,25 @@ const SignUp = () => {
         </svg>
 
         {/* Content */}
-        <div style={{ 
-          position: 'relative', 
-          zIndex: 1, 
-          textAlign: 'center',
-          maxWidth: '400px'
-        }}>
-          <h1 style={{ 
-            fontSize: '48px', 
-            fontWeight: '700', 
-            color: '#FFFFFF',
-            marginBottom: '20px',
-            letterSpacing: '-1px'
-          }}>
+        <div className="relative z-10 text-center max-w-[400px]">
+          <h1 className="text-[48px] font-bold text-white mb-5 tracking-tight">
             Join BookMyTest
           </h1>
-          <p style={{ 
-            fontSize: '18px', 
-            color: 'rgba(255, 255, 255, 0.9)',
-            lineHeight: '1.6'
-          }}>
+          <p className="text-[18px] text-white text-opacity-90 leading-relaxed">
             Create your account and start booking your IELTS, TOEFL, PTE, GRE, and other test vouchers today.
           </p>
         </div>
       </div>
 
       {/* Right Side - Form */}
-      <div style={{
-        flex: 1,
-        background: '#FFFFFF',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '40px',
-        overflowY: 'auto'
-      }}>
-        <div style={{ 
-          width: '100%', 
-          maxWidth: '420px',
-          padding: '40px 40px 20px'
-        }}>
+      <div className="flex-1 bg-white flex justify-center items-center p-10 overflow-y-auto">
+        <div className="w-full max-w-[420px] p-10 pt-10">
           {/* Logo/Brand */}
-          <div style={{ marginBottom: '32px', textAlign: 'center' }}>
-            <h2 style={{ 
-              fontSize: '32px', 
-              fontWeight: '700', 
-              color: '#0A1F44',
-              marginBottom: '8px'
-            }}>
+          <div className="mb-8 text-center">
+            <h2 className="text-[32px] font-bold text-[#0A1F44] mb-2">
               BookMyTest
             </h2>
-            <p style={{ 
-              fontSize: '14px', 
-              color: '#6B7280'
-            }}>
+            <p className="text-sm text-[#6B7280]">
               Create your account
             </p>
           </div>
@@ -181,31 +100,7 @@ const SignUp = () => {
           {/* Google Sign Up Button */}
           <button
             onClick={handleGoogleSignUp}
-            style={{
-              width: '100%',
-              padding: '14px',
-              border: '1.5px solid #E5E7EB',
-              borderRadius: '8px',
-              background: '#FFFFFF',
-              color: '#0A1F44',
-              fontSize: '15px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '12px',
-              marginBottom: '24px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#F8F9FA';
-              e.currentTarget.style.borderColor = '#0047AB';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#FFFFFF';
-              e.currentTarget.style.borderColor = '#E5E7EB';
-            }}
+            className="w-full py-[14px] border-[1.5px] border-[#E5E7EB] rounded-lg bg-white text-[#0A1F44] text-base font-semibold cursor-pointer flex items-center justify-center gap-3 mb-6 transition-all duration-200 hover:bg-[#F8F9FA] hover:border-[#0047AB]"
           >
             <svg width="20" height="20" viewBox="0 0 20 20">
               <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z"/>
@@ -217,43 +112,24 @@ const SignUp = () => {
           </button>
 
           {/* Divider */}
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            margin: '24px 0',
-            gap: '12px'
-          }}>
-            <div style={{ flex: 1, height: '1px', background: '#E5E7EB' }} />
-            <span style={{ fontSize: '14px', color: '#6B7280' }}>or</span>
-            <div style={{ flex: 1, height: '1px', background: '#E5E7EB' }} />
+          <div className="flex items-center my-6 gap-3">
+            <div className="flex-1 h-px bg-[#E5E7EB]" />
+            <span className="text-sm text-[#6B7280]">or</span>
+            <div className="flex-1 h-px bg-[#E5E7EB]" />
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit}>
             {error && (
-              <div style={{
-                padding: '12px',
-                background: '#FEE2E2',
-                border: '1px solid #FCA5A5',
-                borderRadius: '8px',
-                color: '#991B1B',
-                fontSize: '14px',
-                marginBottom: '20px'
-              }}>
+              <div className="p-3 bg-[#FEE2E2] border border-[#FCA5A5] rounded-lg text-[#991B1B] text-sm mb-5">
                 {error}
               </div>
             )}
 
             {/* Name Fields Row */}
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
-              <div style={{ flex: 1 }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '14px', 
-                  fontWeight: '600',
-                  color: '#0A1F44',
-                  marginBottom: '8px'
-                }}>
+            <div className="flex gap-3 mb-4">
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                   First Name
                 </label>
                 <input
@@ -262,30 +138,12 @@ const SignUp = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   placeholder="John"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '1.5px solid #E5E7EB',
-                    borderRadius: '8px',
-                    fontSize: '15px',
-                    color: '#0A1F44',
-                    outline: 'none',
-                    transition: 'border-color 0.2s ease',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                  className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
                 />
               </div>
 
-              <div style={{ flex: 1 }}>
-                <label style={{ 
-                  display: 'block', 
-                  fontSize: '14px', 
-                  fontWeight: '600',
-                  color: '#0A1F44',
-                  marginBottom: '8px'
-                }}>
+              <div className="flex-1">
+                <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                   Last Name
                 </label>
                 <input
@@ -294,31 +152,13 @@ const SignUp = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   placeholder="Doe"
-                  style={{
-                    width: '100%',
-                    padding: '12px 16px',
-                    border: '1.5px solid #E5E7EB',
-                    borderRadius: '8px',
-                    fontSize: '15px',
-                    color: '#0A1F44',
-                    outline: 'none',
-                    transition: 'border-color 0.2s ease',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                  onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                  className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
                 />
               </div>
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600',
-                color: '#0A1F44',
-                marginBottom: '8px'
-              }}>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                 Email Address
               </label>
               <input
@@ -327,30 +167,12 @@ const SignUp = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="john.doe@example.com"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1.5px solid #E5E7EB',
-                  borderRadius: '8px',
-                  fontSize: '15px',
-                  color: '#0A1F44',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
               />
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600',
-                color: '#0A1F44',
-                marginBottom: '8px'
-              }}>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                 Phone Number
               </label>
               <input
@@ -359,30 +181,12 @@ const SignUp = () => {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="+1 (555) 000-0000"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1.5px solid #E5E7EB',
-                  borderRadius: '8px',
-                  fontSize: '15px',
-                  color: '#0A1F44',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
               />
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600',
-                color: '#0A1F44',
-                marginBottom: '8px'
-              }}>
+            <div className="mb-4">
+              <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                 Password
               </label>
               <input
@@ -391,30 +195,12 @@ const SignUp = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Create a strong password"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1.5px solid #E5E7EB',
-                  borderRadius: '8px',
-                  fontSize: '15px',
-                  color: '#0A1F44',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
               />
             </div>
 
-            <div style={{ marginBottom: '24px' }}>
-              <label style={{ 
-                display: 'block', 
-                fontSize: '14px', 
-                fontWeight: '600',
-                color: '#0A1F44',
-                marginBottom: '8px'
-              }}>
+            <div className="mb-6">
+              <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                 Confirm Password
               </label>
               <input
@@ -423,61 +209,24 @@ const SignUp = () => {
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 placeholder="Re-enter your password"
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1.5px solid #E5E7EB',
-                  borderRadius: '8px',
-                  fontSize: '15px',
-                  color: '#0A1F44',
-                  outline: 'none',
-                  transition: 'border-color 0.2s ease',
-                  boxSizing: 'border-box'
-                }}
-                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
-                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                className="w-full py-3 px-4 border-[1.5px] border-[#E5E7EB] rounded-lg text-base text-[#0A1F44] outline-none transition-colors duration-200 focus:border-[#0047AB]"
               />
             </div>
 
             <button
               type="submit"
-              style={{
-                width: '100%',
-                padding: '14px',
-                background: '#0047AB',
-                color: '#FFFFFF',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                marginBottom: '20px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#003A8C';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#0047AB';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
+              className="w-full py-[14px] bg-[#0047AB] text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 mb-5 hover:bg-[#003A8C] hover:translate-y-[-1px]"
             >
               Create Account
             </button>
 
-            <div style={{ textAlign: 'center' }}>
-              <span style={{ fontSize: '14px', color: '#6B7280' }}>
+            <div className="text-center">
+              <span className="text-sm text-[#6B7280]">
                 Already have an account?{' '}
               </span>
               <Link 
                 to="/signin" 
-                style={{ 
-                  fontSize: '14px', 
-                  color: '#0047AB',
-                  textDecoration: 'none',
-                  fontWeight: '600'
-                }}
+                className="text-sm text-[#0047AB] no-underline font-semibold"
               >
                 Sign in
               </Link>
