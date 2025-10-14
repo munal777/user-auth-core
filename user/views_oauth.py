@@ -29,9 +29,16 @@ def google_auth(request):
         email = id_info['email']
         first_name = id_info.get('given_name', '')
         last_name = id_info.get('family_name', '')
-        profile_pic_url = id_info.get('picture', '')
 
-        user, created = User.objects.get_or_create(email=email)
+        try:
+            user = User.objects.get(email=email)
+            created = False
+        except User.DoesNotExist:
+            created = True
+            user = User(
+                email=email,
+            )
+
         if created:
             user.set_unusable_password()
 
@@ -49,10 +56,10 @@ def google_auth(request):
             
             user.username = username
             
-            user.registration_method = 'google'
+            user.registration_method = User.REGISTRATION_CHOICES.GOOGLE
             user.save()
         else:
-            if user.registration_method != 'google':
+            if user.registration_method != User.REGISTRATION_CHOICES.GOOGLE:
                 return Response({
                     "error": "User needs to sign in through email",
                     "status": False
