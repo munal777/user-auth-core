@@ -4,12 +4,11 @@ from google.oauth2 import id_token
 
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import AllowAny
 
 from .models import User
-
+from myproject.utils import api_response
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -17,7 +16,12 @@ def google_auth(request):
     token = request.data.get("token")
 
     if not token:
-        return Response({"error": "Token not provided","status":False}, status=status.HTTP_400_BAD_REQUEST)
+        return api_response(
+            result=None,
+            is_success=False,
+            error_message="Token not provided",
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
     try:
         id_info = id_token.verify_oauth2_token(
@@ -60,22 +64,30 @@ def google_auth(request):
             user.save()
         else:
             if user.registration_method != User.REGISTRATION_CHOICES.GOOGLE:
-                return Response({
-                    "error": "User needs to sign in through email",
-                    "status": False
-                }, status=status.HTTP_403_FORBIDDEN)
+                return api_response(
+                    result=None,
+                    is_success=False,
+                    error_message="User needs to sign in through email",
+                    status_code=status.HTTP_403_FORBIDDEN
+                )
 
         refresh = RefreshToken.for_user(user)
-        return Response(
-            {
+        return api_response(
+            result={
                 "tokens": {
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
-                },
-                "status": True
+                }
             },
-            status=status.HTTP_200_OK
+            is_success=True,
+            error_message=None,
+            status_code=status.HTTP_200_OK
         )
 
     except ValueError:
-        return Response({"error": "Invalid token","status":False}, status=status.HTTP_400_BAD_REQUEST)
+        return api_response(
+            result=None,
+            is_success=False,
+            error_message="Invalid token",
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
