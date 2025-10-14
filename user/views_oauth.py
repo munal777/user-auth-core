@@ -74,8 +74,8 @@ def google_auth(request):
         refresh = RefreshToken.for_user(user)
         return api_response(
             result={
-                "access": str(refresh.access_token),
                 "refresh": str(refresh),
+                "access": str(refresh.access_token),
             },
             is_success=True,
             error_message=None,
