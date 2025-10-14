@@ -51,7 +51,7 @@ const SignUp = () => {
     return (
     <div className="flex h-screen overflow-hidden font-system">
       {/* Left Side - Decorative */}
-      <div className="flex-1 bg-gradient-to-br from-[#0047AB] to-[#1C75BC] relative flex flex-col justify-center items-center p-[60px] overflow-hidden">
+      <div className="hidden md:flex flex-1 bg-gradient-to-br from-[#0047AB] to-[#1C75BC] relative flex-col justify-center items-center p-[60px] overflow-hidden">
         {/* Decorative Elements */}
         <div className="absolute top-[10%] left-[10%] w-[100px] h-[100px] rounded-full border-[2px] border-[rgba(255,255,255,0.2)] border-opacity-20" />
         <div className="absolute top-[20%] right-[15%] w-[6px] h-[60px] bg-[rgba(255,255,255,0.3)] bg-opacity-30 rounded-[3px]" />
