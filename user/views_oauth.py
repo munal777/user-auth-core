@@ -6,13 +6,16 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view,permission_classes
+from rest_framework.permissions import AllowAny
 
 from .models import User
 
 
 @api_view(["POST"])
+@permission_classes([AllowAny])
 def google_auth(request):
     token = request.data.get("token")
+
     if not token:
         return Response({"error": "Token not provided","status":False}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -31,7 +34,21 @@ def google_auth(request):
         user, created = User.objects.get_or_create(email=email)
         if created:
             user.set_unusable_password()
-            user.username = f"{first_name.lower()}.{last_name.lower()}" if first_name and last_name else first_name.lower() or last_name.lower() or "user"
+
+            # Generate unique username
+            base_username = f"{first_name.lower()}.{last_name.lower()}".replace(' ', '_')
+            if not base_username or base_username == ".":
+                base_username = email.split('@')[0]
+            
+            # Ensure uniqueness
+            username = base_username
+            counter = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base_username}_{counter}"
+                counter += 1
+            
+            user.username = username
+            
             user.registration_method = 'google'
             user.save()
         else:

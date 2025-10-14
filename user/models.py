@@ -12,8 +12,20 @@ class User(AbstractBaseUser, PermissionsMixin):
         STAFF = "staff", _("Staff")
         USER = "user", _("User")
 
+
+    class REGISTRATION_CHOICES(models.TextChoices):
+        EMAIL = "email", _("Email")
+        GOOGLE = "google", _("Google")
+
+
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30, unique=True, blank=True, null=True)
+    username = models.CharField(max_length=30, unique=True)
+
+    registration_method = models.CharField(
+        max_length=10,
+        choices=REGISTRATION_CHOICES.choices,
+        default=REGISTRATION_CHOICES.EMAIL
+    )
 
     role = models.CharField(
         max_length=20,
