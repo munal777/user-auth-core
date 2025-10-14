@@ -1,24 +1,51 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const SignUp = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    password: '',
+    confirmPassword: ''
+  });
   const [error, setError] = useState('');
+
+  const handleChange = () => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleSubmit = () => {
     e.preventDefault();
     setError('');
     
-    if (!email || !password) {
+    if (!formData.firstName || !formData.lastName || !formData.email || 
+        !formData.phone || !formData.password || !formData.confirmPassword) {
       setError('Please fill in all fields');
       return;
     }
+    
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+    
+    // Handle sign up logic here
+    console.log('Sign up with:', formData);
   };
 
-  const handleGoogleSignIn = () => {
-    // Handle Google sign in logic here
-    console.log('Sign in with Google');
+  const handleGoogleSignUp = () => {
+    // Handle Google sign up logic here
+    console.log('Sign up with Google');
   };
 
   return (
@@ -106,14 +133,14 @@ const SignIn = () => {
             marginBottom: '20px',
             letterSpacing: '-1px'
           }}>
-            Welcome back!
+            Join BookMyTest
           </h1>
           <p style={{ 
             fontSize: '18px', 
             color: 'rgba(255, 255, 255, 0.9)',
             lineHeight: '1.6'
           }}>
-            Sign in to access your BookMyTest account and manage your test bookings.
+            Create your account and start booking your IELTS, TOEFL, PTE, GRE, and other test vouchers today.
           </p>
         </div>
       </div>
@@ -125,15 +152,16 @@ const SignIn = () => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '40px'
+        padding: '40px',
+        overflowY: 'auto'
       }}>
         <div style={{ 
           width: '100%', 
           maxWidth: '420px',
-          padding: '40px'
+          padding: '40px 40px 20px'
         }}>
           {/* Logo/Brand */}
-          <div style={{ marginBottom: '40px', textAlign: 'center' }}>
+          <div style={{ marginBottom: '32px', textAlign: 'center' }}>
             <h2 style={{ 
               fontSize: '32px', 
               fontWeight: '700', 
@@ -146,13 +174,13 @@ const SignIn = () => {
               fontSize: '14px', 
               color: '#6B7280'
             }}>
-              Sign in to your account
+              Create your account
             </p>
           </div>
 
-          {/* Google Sign In Button */}
+          {/* Google Sign Up Button */}
           <button
-            onClick={handleGoogleSignIn}
+            onClick={handleGoogleSignUp}
             style={{
               width: '100%',
               padding: '14px',
@@ -185,7 +213,7 @@ const SignIn = () => {
               <path fill="#FBBC05" d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A9.973 9.973 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97z"/>
               <path fill="#EA4335" d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88z"/>
             </svg>
-            Continue with Google
+            Sign up with Google
           </button>
 
           {/* Divider */}
@@ -216,7 +244,74 @@ const SignIn = () => {
               </div>
             )}
 
-            <div style={{ marginBottom: '20px' }}>
+            {/* Name Fields Row */}
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ 
+                  display: 'block', 
+                  fontSize: '14px', 
+                  fontWeight: '600',
+                  color: '#0A1F44',
+                  marginBottom: '8px'
+                }}>
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  name="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder="John"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1.5px solid #E5E7EB',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    color: '#0A1F44',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                />
+              </div>
+
+              <div style={{ flex: 1 }}>
+                <label style={{ 
+                  display: 'block', 
+                  fontSize: '14px', 
+                  fontWeight: '600',
+                  color: '#0A1F44',
+                  marginBottom: '8px'
+                }}>
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder="Doe"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1.5px solid #E5E7EB',
+                    borderRadius: '8px',
+                    fontSize: '15px',
+                    color: '#0A1F44',
+                    outline: 'none',
+                    transition: 'border-color 0.2s ease',
+                    boxSizing: 'border-box'
+                  }}
+                  onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
+                  onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
               <label style={{ 
                 display: 'block', 
                 fontSize: '14px', 
@@ -228,9 +323,74 @@ const SignIn = () => {
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john.doe@example.com"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1.5px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  color: '#0A1F44',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '600',
+                color: '#0A1F44',
+                marginBottom: '8px'
+              }}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+1 (555) 000-0000"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1.5px solid #E5E7EB',
+                  borderRadius: '8px',
+                  fontSize: '15px',
+                  color: '#0A1F44',
+                  outline: 'none',
+                  transition: 'border-color 0.2s ease',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '16px' }}>
+              <label style={{ 
+                display: 'block', 
+                fontSize: '14px', 
+                fontWeight: '600',
+                color: '#0A1F44',
+                marginBottom: '8px'
+              }}>
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Create a strong password"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -255,13 +415,14 @@ const SignIn = () => {
                 color: '#0A1F44',
                 marginBottom: '8px'
               }}>
-                Password
+                Confirm Password
               </label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Re-enter your password"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -276,21 +437,6 @@ const SignIn = () => {
                 onFocus={(e) => e.currentTarget.style.borderColor = '#0047AB'}
                 onBlur={(e) => e.currentTarget.style.borderColor = '#E5E7EB'}
               />
-            </div>
-
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'flex-end',
-              marginBottom: '24px'
-            }}>
-              <a href="#" style={{ 
-                fontSize: '14px', 
-                color: '#0047AB',
-                textDecoration: 'none',
-                fontWeight: '500'
-              }}>
-                Forgot password?
-              </a>
             </div>
 
             <button
@@ -317,15 +463,15 @@ const SignIn = () => {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
-              Sign In
+              Create Account
             </button>
 
             <div style={{ textAlign: 'center' }}>
               <span style={{ fontSize: '14px', color: '#6B7280' }}>
-                Don't have an account?{' '}
+                Already have an account?{' '}
               </span>
               <Link 
-                to="/signup" 
+                to="/signin" 
                 style={{ 
                   fontSize: '14px', 
                   color: '#0047AB',
@@ -333,7 +479,7 @@ const SignIn = () => {
                   fontWeight: '600'
                 }}
               >
-                Sign up
+                Sign in
               </Link>
             </div>
           </form>
@@ -343,4 +489,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
