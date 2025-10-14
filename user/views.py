@@ -124,7 +124,11 @@ class UserListAPIView(APIView):
         queryset = User.objects.all()
 
         serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
 
 class UserDetailsAPIView(APIView):
     
@@ -143,7 +147,11 @@ class UserDetailsAPIView(APIView):
         queryset = get_object_or_404(User, id=id)
         serializer = UserSerializer(queryset)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
     
     @swagger_auto_schema(
         operation_description="Update user details by ID.",
@@ -162,8 +170,17 @@ class UserDetailsAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return api_response(
+                result=serializer.data,
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
 
 
@@ -184,7 +201,11 @@ class UserProfileAPIView(APIView):
         queryset = get_object_or_404(UserProfile, id=id)
         serializer = UserProfileSerializer(queryset)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
 
     @swagger_auto_schema(
         operation_description="Update user profile by ID.",
@@ -204,8 +225,17 @@ class UserProfileAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
         
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return api_response(
+                result=serializer.data,
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
     
    
 
@@ -232,8 +262,17 @@ class SendOTPView(APIView):
             cache.set(f"otp:{email}", otp_code, timeout=300)
             send_otp.delay(email, otp_code)
 
-            return Response({"message": "OTP send to email"}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return api_response(
+                result={"message": "OTP sent to email"},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
 
 
@@ -255,8 +294,17 @@ class ValidateOTPView(APIView):
         serializer = ValidateOTPSerializer(data=request.data)
 
         if serializer.is_valid():
-            return Response({"message": "OTP verified successfully."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return api_response(
+                result={"message": "OTP verified successfully."},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
 
 
 
@@ -280,5 +328,14 @@ class ChangePasswordAPIView(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return api_response(
+                result={"message": "Password changed successfully."},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
