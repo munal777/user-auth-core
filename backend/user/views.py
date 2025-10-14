@@ -1,0 +1,341 @@
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny, IsAdminUser
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
+
+from django.shortcuts import get_object_or_404
+from django.core.cache import cache
+
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
+from myproject.utils import api_response
+from .serializers import (
+    LoginUserSerializer,
+    RegisterUserSerializer,
+    UserSerializer, 
+    UserProfileSerializer, 
+    SendOTPSerializer, 
+    ValidateOTPSerializer, 
+    ChangePasswordSerializer
+)
+from .models import UserProfile, User
+from .permissions import IsOwnerOrReadOnly
+from .tasks import send_otp
+from .utils import generate_otp
+
+
+
+class RegistrationView(APIView):
+    
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Register a new user.",
+        request_body=RegisterUserSerializer,
+        responses={
+            201: openapi.Response("User registered successfully"),
+            400: openapi.Response("Validation error")
+        },
+        tags=["Auth"]
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = RegisterUserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return api_response(
+                result={
+                    "message": "User created successfully",
+                },
+                is_success=True,
+                status_code=status.HTTP_201_CREATED
+            )
+        return api_response(
+            is_success=False,
+            error_message=serializer.errors,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+   
+
+
+class LoginView(TokenObtainPairView):
+    serializer_class = LoginUserSerializer
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Login user and create a session.",
+        request_body=LoginUserSerializer,
+        responses={
+            200: openapi.Response("Login successful"),
+            400: openapi.Response("Invalid credentials")
+        },
+        tags=["Auth"]
+    )
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0]) from e
+        except ValidationError as e:
+            # Catch validation errors 
+            error_message = e.detail
+            print(error_message)
+            if isinstance(error_message, list):
+                error_message = error_message[0] if error_message else "Invalid credentials"
+            elif isinstance(error_message, dict):
+                error_message = error_message.get('detail', 'Invalid credentials')
+            
+            return api_response(
+                is_success=False,
+                error_message=error_message,
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
+        
+        return api_response(
+            result=serializer.validated_data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
+
+
+
+
+class UserListAPIView(APIView):
+
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve a list of all users (admin only).",
+        responses={
+            200: openapi.Response("List of users", UserSerializer(many=True)),
+            403: openapi.Response("Forbidden")
+        },
+        tags=["User"]
+    )
+    def get(self, request):
+        queryset = User.objects.all()
+
+        serializer = UserSerializer(queryset, many=True)
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
+
+class UserDetailsAPIView(APIView):
+    
+    permission_classes = [IsOwnerOrReadOnly]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve details of a user by ID.",
+        responses={
+            200: openapi.Response("User details", UserSerializer()),
+            404: openapi.Response("User not found")
+        },
+        tags=["User"]
+    )
+    def get(self, request, id):
+        
+        queryset = get_object_or_404(User, id=id)
+        serializer = UserSerializer(queryset)
+
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
+    
+    @swagger_auto_schema(
+        operation_description="Update user details by ID.",
+        request_body=UserSerializer,
+        responses={
+            200: openapi.Response("User updated successfully", UserSerializer()),
+            400: openapi.Response("Validation error"),
+            404: openapi.Response("User not found")
+        },
+        tags=["User"]
+    )
+    def put(self, request, id):
+        user = User.objects.get(id=id)
+        serializer = UserSerializer(user, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return api_response(
+                result=serializer.data,
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+class UserProfileAPIView(APIView):
+
+    permission_classes = [IsOwnerOrReadOnly]
+
+    @swagger_auto_schema(
+        operation_description="Retrieve user profile by ID.",
+        responses={
+            200: openapi.Response("Profile details", UserProfileSerializer()),
+            404: openapi.Response("Profile not found")
+        },
+        tags=["User"]
+    )
+    def get(self, request, id):
+
+        queryset = get_object_or_404(UserProfile, id=id)
+        serializer = UserProfileSerializer(queryset)
+
+        return api_response(
+            result=serializer.data,
+            is_success=True,
+            status_code=status.HTTP_200_OK
+        )
+
+    @swagger_auto_schema(
+        operation_description="Update user profile by ID.",
+        request_body=UserProfileSerializer,
+        responses={
+            200: openapi.Response("Profile updated successfully", UserProfileSerializer()),
+            400: openapi.Response("Validation error"),
+            404: openapi.Response("Profile not found")
+        },
+        tags=["User"]
+    )    
+    def put(self, request, id):
+
+        queryset = get_object_or_404(UserProfile, id=id)
+        serializer = UserProfileSerializer(queryset, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+        
+            return api_response(
+                result=serializer.data,
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+    
+   
+
+
+class SendOTPView(APIView):
+
+    permission_classes = [AllowAny]
+    
+    @swagger_auto_schema(
+        operation_description="Send OTP to email address.",
+        request_body=SendOTPSerializer,
+        responses={
+            200: openapi.Response("OTP sent successfully"),
+            400: openapi.Response("Validation error")
+        },
+        tags=["Auth"]
+    )
+    def post(self, request):
+        serializer = SendOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            otp_code = generate_otp()
+            cache.set(f"otp:{email}", otp_code, timeout=300)
+            send_otp.delay(email, otp_code)
+
+            return api_response(
+                result={"message": "OTP sent to email"},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+
+class ValidateOTPView(APIView):
+
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Validate the OTP sent to user's email.",
+        request_body=ValidateOTPSerializer,
+        responses={
+            200: openapi.Response("OTP verified successfully"),
+            400: openapi.Response("Invalid or expired OTP")
+        },
+        tags=["Auth"]
+    )
+    def post(self, request):
+        serializer = ValidateOTPSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return api_response(
+                result={"message": "OTP verified successfully."},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+
+class ChangePasswordAPIView(APIView):
+
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        operation_description="Change user password.",
+        request_body=ChangePasswordSerializer,
+        responses={
+            200: openapi.Response("Password changed successfully"),
+            400: openapi.Response("Validation error")
+        },
+        tags=["Auth"]
+    )
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            return api_response(
+                result={"message": "Password changed successfully."},
+                is_success=True,
+                status_code=status.HTTP_200_OK
+            )
+
+        return api_response(
+            error_message=serializer.errors,
+            is_success=False,
+            status_code=status.HTTP_400_BAD_REQUEST
+        )
