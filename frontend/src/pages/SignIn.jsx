@@ -199,7 +199,7 @@ const SignIn = () => {
                 Don't have an account?{" "}
               </span>
               <Link
-                to="/signup"
+                to="/sign-up"
                 className="text-sm text-[#0047AB] no-underline font-semibold"
               >
                 Sign up

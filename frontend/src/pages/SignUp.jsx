@@ -256,7 +256,7 @@ const SignUp = () => {
                 Already have an account?{" "}
               </span>
               <Link
-                to="/signin"
+                to="/sign-in"
                 className="text-sm text-[#0047AB] no-underline font-semibold"
               >
                 Sign in
