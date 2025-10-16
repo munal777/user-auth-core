@@ -146,6 +146,12 @@ const SignIn = () => {
               </div>
             )}
 
+            {success && (
+              <div className="p-3 bg-[#7ffd8e] border border-[#32ff20] rounded-lg text-[#02890d] text-sm mb-5">
+                {success}
+              </div>
+            )}
+
             <div className="mb-5">
               <label className="block text-sm font-semibold text-[#0A1F44] mb-2">
                 Email Address

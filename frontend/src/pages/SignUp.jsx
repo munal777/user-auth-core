@@ -150,6 +150,13 @@ const SignUp = () => {
               </div>
             )}
 
+            {success && (
+              <div className="p-3 bg-[#7ffd8e] border border-[#32ff20] rounded-lg text-[#02890d] text-sm mb-5">
+                {success}
+              </div>
+            )}
+
+
             {/* Name Fields Row */}
             <div className="flex gap-3 mb-4">
               <div className="flex-1">
