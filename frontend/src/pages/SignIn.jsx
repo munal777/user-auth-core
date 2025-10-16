@@ -128,7 +128,7 @@ const SignIn = () => {
 
           {/* Google Sign In Button */}
           <div className="my-3">
-            <GoogleSignInButton onSuccess={handleGoogleSignIn}/>
+            <GoogleSignInButton onSuccess={handleGoogleSignIn} text={"signin_with"}/>
           </div>
 
           {/* Divider */}

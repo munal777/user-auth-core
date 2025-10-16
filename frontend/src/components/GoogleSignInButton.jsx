@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { CLIENT_ID } from "../config/api";
 
-export default function GoogleSignInButton({ onSuccess }) {
+export default function GoogleSignInButton({ onSuccess, text }) {
   const googleSignInDiv = useRef(null);
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function GoogleSignInButton({ onSuccess }) {
       window.google.accounts.id.renderButton(googleSignInDiv.current, {
         theme: "outline",
         size: "large",
-        text: "signin_with",
+        text: text,
         shape: "rectangular",
       });
     }
