@@ -1,8 +1,7 @@
 const BASE_URL = import.meta.env.VITE_API_URL;
-const GOOGLE_ID = import.meta.env.GOOGLE_CLIENT_ID;
 
 export const CLIENT_ID = {
-  GOOGLE_CLIENT_ID: GOOGLE_ID,
+  GOOGLE: import.meta.env.VITE_GOOGLE_CLIENT_ID,
 }
 
 export const API_ROUTES = {
